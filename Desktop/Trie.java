@@ -56,37 +56,38 @@ class Trie{
     }
 
     public void removeTrie(String word) {
-    	if (word == null || word.length == 0)
-    		return;
+        if (word == null || word.length == 0)
+            return;
         SortedMap<Character, TrieNode> nextLetters = this.root.childNodes;
         Stack<SortedMap<Character, TrieNode>> levels = new Stack<>();
 
         for (int i = 0; i < word.length - 1; i++) {
-        	char letter = word.charAt(i);
-        	levels.push(nextLetters);
-        	if (!nextLetters.containsKey(letter))
-        		return; 
-        	nextLetters = nextLetters.get(letter).childNodes;
+            char letter = word.charAt(i);
+            levels.push(nextLetters);
+            if (!nextLetters.containsKey(letter))
+                return; 
+            nextLetters = nextLetters.get(letter).childNodes;
         }
 
         char letter = word.charAt(word.length() - 1);
         TrieNode node = nextLetters.get(letter);
         
         if (node == null || node.count == 0)
-        	return;
+            return;
 
-		node.count--;
+        //Prune branches if necessary.
+        node.count--;
         if (node.count == 0 && node.childNodes.size() == 0) {
-        	nextLetters.remove(letter);
-        	while (!levels.isEmpty()) {
-        		nextLetters = levels.pop();
-        		letter = word.charAt(levels.size());
-        		node = nextLetters.get(letter);
-        		if (node.childNodes.size() != 0)
-        			break;
+            nextLetters.remove(letter);
+            while (!levels.isEmpty()) {
+                nextLetters = levels.pop();
+                letter = word.charAt(levels.size());
+                node = nextLetters.get(letter);
+                if (node.childNodes.size() != 0)
+                    break;
 
-        		nextLetters.remove(letter);
-        	}
+                nextLetters.remove(letter);
+            }
         }
     }
 }
